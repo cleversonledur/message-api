@@ -6,7 +6,7 @@ This is a simple message api that was constructed using Java Spring Boot. This p
 
 This API uses OAuth2 authentication method that is managed by Spring Security. You must follow the next steps in order to obtain an access and refresh token. 
 
-[logo]: https://assets.digitalocean.com/articles/oauth/abstract_flow.png test
+![Example of OAuth2 Authentication](https://assets.digitalocean.com/articles/oauth/abstract_flow.png)
 
 1. For obtaining the access and refresh token, you must request a POST for http://localhost:8080/oauth/token with the following username and password for a Basic Auth:
 
