@@ -19,13 +19,14 @@ public class UserDAO extends AbstractDAO{
     @Autowired
     private IUserDAO userDAO;
 
+    private String entityName(){
+        return User.class.getName();
+    }
+
     public List<User> listAll() {
         return this.userDAO.findAll();
     }
 
-    private String entityName(){
-        return User.class.getName();
-    }
 
     public User save(User user) throws DAOException {
         try {

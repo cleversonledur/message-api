@@ -43,6 +43,11 @@ public class UserBO {
 
     }
 
+    public User getByEmail(String email) throws DAOException {
+        return userDAO.findByEmail(email);
+
+    }
+
     public UserDetails findByEmail(String email) throws DAOException {
         return userDAO.findByEmail(email);
     }
