@@ -3,6 +3,7 @@ package com.sbtest.messages.api.controller;
 
 import com.sbtest.messages.api.bo.UserBO;
 import com.sbtest.messages.api.exception.DAOException;
+import com.sbtest.messages.api.exception.GenericException;
 import com.sbtest.messages.api.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class UserServiceV1 {
     Object add(@RequestParam String name,
              @RequestParam String email,
              @RequestParam String password
-             ) throws DAOException {
+             ) throws DAOException, GenericException {
         return userBO.addUser(name, email, password);
     }
 

@@ -27,13 +27,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory().withClient("android-client")
+        clients.inMemory().withClient("api-client")
                 .authorizedGrantTypes("client-credentials", "password","refresh_token")
                 .authorities("ROLE_CLIENT", "ROLE_ANDROID_CLIENT")
                 .scopes("read", "write", "trust")
                 .resourceIds("oauth2-resource")
                 .accessTokenValiditySeconds(5000)
-                .secret("android-secret").refreshTokenValiditySeconds(50000);
+                .secret("api-secret").refreshTokenValiditySeconds(50000);
     }
 
     @Override

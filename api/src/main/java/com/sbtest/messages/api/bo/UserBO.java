@@ -2,6 +2,7 @@ package com.sbtest.messages.api.bo;
 
 import com.sbtest.messages.api.dao.UserDAO;
 import com.sbtest.messages.api.exception.DAOException;
+import com.sbtest.messages.api.exception.GenericException;
 import com.sbtest.messages.api.model.User;
 import com.sbtest.messages.api.utils.Hash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,17 @@ public class UserBO {
         return userDAO.listAll();
     }
 
-    public Object addUser(String name, String email, String password) throws DAOException {
-        User user = new User();
+    public Object addUser(String name, String email, String password) throws DAOException, GenericException {
+
+        User user = userDAO.findByEmail(email);
+
+        if(user!= null){
+            throw new GenericException("This user already exists.");
+        }
+
+        user = new User();
         user.setEmail(email);
         user.setName(name);
-
 
         String saltedPassword = Hash.SALT + password;
         String hashedPassword = Hash.generateHash(saltedPassword);

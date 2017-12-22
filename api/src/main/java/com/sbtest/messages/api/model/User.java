@@ -16,6 +16,8 @@ public class User implements UserDetails {
     private String password;
     private String email;
 
+    private Boolean expired = false;
+    private Boolean locked = false;
 
     public String getId() {
         return id;
@@ -77,5 +79,21 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Boolean locked) {
+        this.locked = locked;
+    }
+
+    public Boolean getExpired() {
+        return expired;
+    }
+
+    public void setExpired(Boolean expired) {
+        this.expired = expired;
     }
 }
