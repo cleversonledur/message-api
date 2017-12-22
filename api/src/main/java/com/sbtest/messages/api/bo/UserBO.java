@@ -1,11 +1,14 @@
 package com.sbtest.messages.api.bo;
 
 import com.sbtest.messages.api.dao.UserDAO;
+import com.sbtest.messages.api.exception.DAOException;
 import com.sbtest.messages.api.model.User;
+import com.sbtest.messages.api.utils.Hash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.List;
 
 @Component
 public class UserBO {
@@ -13,18 +16,43 @@ public class UserBO {
     @Autowired
     UserDAO userDAO;
 
-    public Map<Object,Object> listUsers() {
-        return userDAO.findAllUsers();
+    public List<User> listUsers() {
+        return userDAO.listAll();
     }
 
-    public Object addUser(String name, String email, String password) {
+    public Object addUser(String name, String email, String password) throws DAOException {
         User user = new User();
         user.setEmail(email);
         user.setName(name);
-        user.setPassword(password);
 
-        userDAO.saveUser(user);
+
+        String saltedPassword = Hash.SALT + password;
+        String hashedPassword = Hash.generateHash(saltedPassword);
+
+        user.setPassword(hashedPassword);
+
+        userDAO.save(user);
         return user;
 
+    }
+
+    public UserDetails findByEmail(String email) throws DAOException {
+        return userDAO.findByEmail(email);
+    }
+
+    public Boolean login(String email, String password) throws DAOException {
+
+        Boolean isAuthenticated = false;
+
+        String saltedPassword = Hash.SALT + password;
+        String hashedPassword = Hash.generateHash(saltedPassword);
+
+        String storedPasswordHash = userDAO.findByEmail(email).getPassword();
+        if(hashedPassword.equals(storedPasswordHash)){
+            isAuthenticated = true;
+        }else{
+            isAuthenticated = false;
+        }
+        return isAuthenticated;
     }
 }

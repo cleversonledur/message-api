@@ -1,20 +1,28 @@
 package com.sbtest.messages.api.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+
+
+@Document(collection = "message")
 public class Message implements Serializable {
 
-    private Long id;
+    @Id
+    private String id;
+
     private User user;
     private LocalDateTime datetime;
     private String content;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

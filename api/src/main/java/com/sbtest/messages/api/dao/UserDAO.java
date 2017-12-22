@@ -1,46 +1,66 @@
 package com.sbtest.messages.api.dao;
 
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.sbtest.messages.api.dao.iface.IUserDAO;
+import com.sbtest.messages.api.exception.DAOException;
 import com.sbtest.messages.api.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.util.Map;
+import java.util.List;
 
-@Repository
+
+@Service
 public class UserDAO {
 
-    private static final String KEY = "User";
 
-    private RedisTemplate<String, User> redisTemplate;
-    private HashOperations hashOps;
+    public Mongo mongo() throws Exception {
+        return new MongoClient("localhost");
+    }
+
+    public MongoTemplate mongoTemplate() throws Exception {
+        return new MongoTemplate(mongo(), "local");
+    }
 
     @Autowired
-    public UserDAO(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    private IUserDAO userDAO;
+
+    public List<User> listAll() {
+        return this.userDAO.findAll();
     }
 
-    @PostConstruct
-    private void init() {
-        hashOps = redisTemplate.opsForHash();
+    public User save(User user) throws DAOException {
+        try {
+            mongoTemplate().insert(user,"user");
+            return user;
+        } catch (Exception e) {
+            throw new DAOException("Ocorreu um problema ao inserir o usuário.");
+        }
     }
 
-    public void saveUser(User user) {
-        hashOps.put(KEY, user.getId(), user);
+    public User update(User user) {
+        return this.userDAO.save(user);
     }
 
-    public void deleteUser(String id) {
-        hashOps.delete(KEY, id);
+    public void remove(User user) {
+        this.userDAO.delete(user);
     }
 
-    public User findUser(String id) {
-        return (User) hashOps.get(KEY, id);
+    public User findByEmail(String email) throws DAOException {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("email").is(email));
+
+        try {
+            return this.mongoTemplate().findOne(query,User.class);
+        } catch (Exception e) {
+            throw new DAOException("Ocorreu um erro ao consultar os dados no banco de dados.");
+        }
+
     }
 
-    public Map<Object, Object> findAllUsers() {
-        return hashOps.entries(KEY);
-    }
 
 }
